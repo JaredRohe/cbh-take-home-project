@@ -46,10 +46,11 @@ We also need to make sure we implement the "down" migration or rollback for thes
 Estimate:3
 
 We need to create a new endpoint `agents` which accepts `POST` request.
-It also needs to be able parse `multipart/form-data` in order to process the csv file that will come along with the requests. We will then parse the csv file into a js object. We will implement validation logic to ensure the csv is formatted properly In turn, this js object will be form the DML update query which adds the new external agent ids to the matching internal ids
+It also needs to be able parse `multipart/form-data` in order to process the csv file that will come along with the requests. We will then parse the csv file into a js object. We will implement validation logic to ensure the csv is formatted properly. In turn, this js object will be form the DML update query which adds the new external agent ids to the matching internal ids
 
 Acceptance Criteria:
 - POST /agents with a csv file successfully stores external id's in the Agent table
+- POST /agents with a malfromed csv file returns a 400
 
 **This ticket is blocked by `Ticket #1`**
 
@@ -72,13 +73,17 @@ Please provide a .csv document in the following format:
  -------
 | Submit |
  -------
-
 ```
 
 The above upload button will be a native html input element of `type="file"`.  When the user clicks `Submit`, we will send a POST request to `https://fooapi.com/agents`
 
+Acceptance Criteria:
 
-#### Ticket #4 Update `getShiftsByFacility`
+The user can upload a csv of id mappings and sees a success error message.
+The user sees an error message if the csv is malformattted.
+
+
+### Ticket #4 Update `getShiftsByFacility`
 
 Estimate: 1
 
@@ -86,7 +91,12 @@ The `getShiftsByFacility` function now needs to return the Agent's external Id i
 
 We also need to make sure this update to the query does not introduce any regressions. Our existing test suite must still pass, and we must also add a new unit test to ensure `getShiftsByFacility` includes `external_id` in the Agent metadata.
 
-#### Ticket #5 Update `generateReport`
+Acceptance Criteria:
+`external_id` is present in the Agent metadata returned by the `getShiftsByFacility` function.
+
+### Ticket #5 Update `generateReport`
+
+- Estimate: 1
 
 We need to update the `generateReport` function so that the pdfs now display external id's instead of internal agent id's.
 
